@@ -7,18 +7,22 @@ import java.util.HashSet;
 
 public class CSVParsing implements Runnable {
 
-    String filename;
+    private String filename;
+    private HashSet<String> titles;
+    private HashMap<String, Integer> titlesHashMap;
+    private ArrayList<UniqueWords> uniqueWordsArrayList;
 
-    public CSVParsing(String filename) {
+    public CSVParsing(String filename, HashSet<String> titles, HashMap<String, Integer> titlesHashMap,
+                      ArrayList<UniqueWords> uniqueWordsArrayList) {
         this.filename = filename;
+        this.titles = titles;
+        this.titlesHashMap = titlesHashMap;
+        this.uniqueWordsArrayList = uniqueWordsArrayList;
     }
 
     @Override
     public void run() {
 
-        HashSet<String> titles = new HashSet<>();
-        HashMap<String, Integer> titlesHashMap = new HashMap<>();
-        ArrayList<UniqueWords> uniqueWordsArrayList = new ArrayList<>();
         int index = 0;
 
         BufferedReader br = null;
