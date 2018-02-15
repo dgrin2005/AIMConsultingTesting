@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class CSVCreating {
-    private HashSet<String> titles;
+class CSVCreating {
+    private ArrayList<String> titles;
     private HashMap<String, Integer> titlesHashMap;
     private ArrayList<UniqueWords> uniqueWordsArrayList;
 
-    public CSVCreating(HashSet<String> titles, HashMap<String, Integer> titlesHashMap,
+    public CSVCreating(ArrayList<String> titles, HashMap<String, Integer> titlesHashMap,
                        ArrayList<UniqueWords> uniqueWordsArrayList) {
         this.titles = titles;
         this.titlesHashMap = titlesHashMap;
@@ -26,14 +26,12 @@ public class CSVCreating {
             HashSet<String> words = uniqueWordsArrayList.get(titlesHashMap.get(title)).getWords();
             Iterator<String> wordsIterator = words.iterator();
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(title), "utf-8"));
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(title), "windows-1251"));
                 while (wordsIterator.hasNext()) {
                     bw.write(wordsIterator.next()+";");
                 }
                 bw.flush();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
+            } catch (UnsupportedEncodingException | FileNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -43,9 +41,6 @@ public class CSVCreating {
                 }
             }
         }
-
-
-
     }
 
 }

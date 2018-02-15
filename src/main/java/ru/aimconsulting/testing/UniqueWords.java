@@ -2,7 +2,7 @@ package ru.aimconsulting.testing;
 
 import java.util.HashSet;
 
-public class UniqueWords {
+class UniqueWords {
 
     private HashSet<String> words = new HashSet<>();
 
@@ -10,7 +10,4 @@ public class UniqueWords {
         return words;
     }
 
-    public void setWords(HashSet<String> words) {
-        this.words = words;
-    }
 }

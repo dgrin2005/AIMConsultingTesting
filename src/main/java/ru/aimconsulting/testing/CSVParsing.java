@@ -3,55 +3,55 @@ package ru.aimconsulting.testing;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
-public class CSVParsing implements Runnable {
+class CSVParsing implements Runnable {
 
     private String filename;
-    private HashSet<String> titles;
+    private ArrayList<String> titles;
     private HashMap<String, Integer> titlesHashMap;
     private ArrayList<UniqueWords> uniqueWordsArrayList;
+    private Integer lock1;
+    private Integer lock2;
 
-    public CSVParsing(String filename, HashSet<String> titles, HashMap<String, Integer> titlesHashMap,
-                      ArrayList<UniqueWords> uniqueWordsArrayList) {
+    public CSVParsing(String filename, ArrayList<String> titles, HashMap<String, Integer> titlesHashMap,
+                      ArrayList<UniqueWords> uniqueWordsArrayList, Integer lock1, Integer lock2) {
         this.filename = filename;
         this.titles = titles;
         this.titlesHashMap = titlesHashMap;
         this.uniqueWordsArrayList = uniqueWordsArrayList;
+        this.lock1 = lock1;
+        this.lock2 = lock2;
     }
 
     @Override
     public void run() {
-
-        int index = 0;
-
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "windows-1251"));
             String s = br.readLine();
-            s.trim();
-            String[] titlewords = s.split(";");
             if (s != null) {
+                String[] titlewords = s.trim().split(";");
                 HashMap<Integer, Integer> titlewordsIndexHashMap = new HashMap<>();
                 int titlewordsIndex = 0;
                 for (String titleword: titlewords) {
                     String currentTitle = titleword.trim();
-                    int currentIndex;
-                    titles.add(currentTitle);
-                    if (titlesHashMap.containsKey(currentTitle)){
-                        currentIndex = titlesHashMap.get(currentTitle);
-                    } else {
-                        currentIndex = index;
-                        titlesHashMap.put(currentTitle, index++);
+                    synchronized (lock1) {
+                        if (!titles.contains(currentTitle)) {
+                            titles.add(currentTitle);
+                            titlesHashMap.put(currentTitle, titles.size() - 1);
+                            titlewordsIndexHashMap.put(titlewordsIndex++, titles.size() - 1);
+                        } else {
+                            titlewordsIndexHashMap.put(titlewordsIndex++, titles.indexOf(currentTitle));
+                        }
                     }
-                    titlewordsIndexHashMap.put(titlewordsIndex++, currentIndex);
                 }
-                for (int i = uniqueWordsArrayList.size(); i < titles.size(); i++) {
-                    uniqueWordsArrayList.add(new UniqueWords());
+                synchronized (lock2) {
+                    for (int i = uniqueWordsArrayList.size(); i < titles.size(); i++) {
+                        uniqueWordsArrayList.add(new UniqueWords());
+                    }
                 }
                 while((s = br.readLine())!= null) {
-                    s.trim();
-                    String[] words = s.split(";");
+                    String[] words = s.trim().split(";");
                     int wordsIndex = 0;
                     for (String word: words) {
                         String currentWord = word.trim();
@@ -60,8 +60,6 @@ public class CSVParsing implements Runnable {
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +70,6 @@ public class CSVParsing implements Runnable {
                 e.printStackTrace();
             }
         }
-
-
     }
+
 }
