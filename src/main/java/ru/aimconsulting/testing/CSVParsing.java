@@ -8,19 +8,15 @@ class CSVParsing implements Runnable {
 
     private String filename;
     private ArrayList<String> titles;
-    private HashMap<String, Integer> titlesHashMap;
     private ArrayList<UniqueWords> uniqueWordsArrayList;
-    private final Integer lock1;
-    private final Integer lock2;
+    private final Integer lock;
 
-    public CSVParsing(String filename, ArrayList<String> titles, HashMap<String, Integer> titlesHashMap,
-                      ArrayList<UniqueWords> uniqueWordsArrayList, Integer lock1, Integer lock2) {
+    public CSVParsing(String filename, ArrayList<String> titles, ArrayList<UniqueWords> uniqueWordsArrayList,
+                      Integer lock) {
         this.filename = filename;
         this.titles = titles;
-        this.titlesHashMap = titlesHashMap;
         this.uniqueWordsArrayList = uniqueWordsArrayList;
-        this.lock1 = lock1;
-        this.lock2 = lock2;
+        this.lock = lock;
     }
 
     @Override
@@ -35,19 +31,12 @@ class CSVParsing implements Runnable {
                 int titlewordsIndex = 0;
                 for (String titleword: titlewords) {
                     String currentTitle = titleword.trim();
-                    synchronized (lock1) {
+                    synchronized (lock) {
                         if (!titles.contains(currentTitle)) {
                             titles.add(currentTitle);
-                            titlesHashMap.put(currentTitle, titles.size() - 1);
-                            titlewordsIndexHashMap.put(titlewordsIndex++, titles.size() - 1);
-                        } else {
-                            titlewordsIndexHashMap.put(titlewordsIndex++, titles.indexOf(currentTitle));
+                            uniqueWordsArrayList.add(new UniqueWords());
                         }
-                    }
-                }
-                synchronized (lock2) {
-                    for (int i = uniqueWordsArrayList.size(); i < titles.size(); i++) {
-                        uniqueWordsArrayList.add(new UniqueWords());
+                        titlewordsIndexHashMap.put(titlewordsIndex++, titles.indexOf(currentTitle));
                     }
                 }
                 while((s = br.readLine())!= null) {

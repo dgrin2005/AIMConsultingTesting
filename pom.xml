@@ -40,7 +40,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.aimconsulting.testing.StartWindow</mainClass>
+                            <mainClass>ru.aimconsulting.testing.CSVParsingMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -65,7 +65,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.aimconsulting.testing.StartWindow</mainClass>
+                            <mainClass>ru.aimconsulting.testing.CSVParsingMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
