@@ -19,27 +19,16 @@ class CSVCreating {
     }
 
     public void createCSV() throws IOException {
-        Iterator<String> titlesIterator = titles.iterator();
-        BufferedWriter bw = null;
-        while (titlesIterator.hasNext()) {
-            String title = titlesIterator.next();
+        for (String title : titles) {
             HashSet<String> words = uniqueWordsArrayList.get(titlesHashMap.get(title)).getWords();
             Iterator<String> wordsIterator = words.iterator();
-            try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(title), "windows-1251"));
-                while (wordsIterator.hasNext()) {
-                    bw.write(wordsIterator.next()+";");
-                }
-                bw.flush();
-            } catch (UnsupportedEncodingException | FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(title),
+                    "windows-1251"));
+            while (wordsIterator.hasNext()) {
+                bw.write(wordsIterator.next() + ";");
             }
+            bw.flush();
+            bw.close();
         }
     }
 

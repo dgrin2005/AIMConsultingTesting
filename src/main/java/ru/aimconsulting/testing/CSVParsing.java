@@ -10,8 +10,8 @@ class CSVParsing implements Runnable {
     private ArrayList<String> titles;
     private HashMap<String, Integer> titlesHashMap;
     private ArrayList<UniqueWords> uniqueWordsArrayList;
-    private Integer lock1;
-    private Integer lock2;
+    private final Integer lock1;
+    private final Integer lock2;
 
     public CSVParsing(String filename, ArrayList<String> titles, HashMap<String, Integer> titlesHashMap,
                       ArrayList<UniqueWords> uniqueWordsArrayList, Integer lock1, Integer lock2) {
@@ -55,7 +55,8 @@ class CSVParsing implements Runnable {
                     int wordsIndex = 0;
                     for (String word: words) {
                         String currentWord = word.trim();
-                        UniqueWords currentUniqueWords = uniqueWordsArrayList.get(titlewordsIndexHashMap.get(wordsIndex++));
+                        UniqueWords currentUniqueWords = uniqueWordsArrayList.get(
+                                titlewordsIndexHashMap.get(wordsIndex++));
                         currentUniqueWords.getWords().add(currentWord);
                     }
                 }
@@ -65,7 +66,9 @@ class CSVParsing implements Runnable {
         }
         finally {
             try {
-                br.close();
+                if (br != null) {
+                    br.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
